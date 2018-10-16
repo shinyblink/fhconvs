@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 	int ret;
 
 	if (argc != 2) {
-		MSG("Usage: %s videofile", argv[0]);
+		MSG("Usage: %s videofile\n", argv[0]);
 		return 1;
 	}
 
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 			return 2;
 		}
 		cparams = stream->codecpar;
-		MSG("[info] stream %i: framerate: %d/%d\n", i, stream->time_base.num, stream->time_base.den);
+		MSG("[info] stream %i: framerate: %d/%d frames: %i\n", i, stream->r_frame_rate.num, stream->r_frame_rate.den, stream->nb_frames);
 
 		codec = avcodec_find_decoder(cparams->codec_id);
 		if (!codec) {
@@ -94,13 +94,22 @@ int main(int argc, char* argv[]) {
 	filehead.imageHead.width = cparams->width;
 	filehead.imageHead.height = cparams->height;
 
-	filehead.frameTimeMul = stream->r_frame_rate.num;
-	filehead.frameTimeDiv = stream->r_frame_rate.den;
+	// Get frame rate.
+	AVRational rate;
+#ifdef av_guess_frame_rate
+	rate = av_guess_frame_rate(fmtctx, stream, NULL);
+#else
+	rate = stream->r_frame_rate;
+#endif
+	// Convert into frame time from FPS.
+	// tl;dw: They are swapped.
+	filehead.frameTimeMul = rate.den;
+	filehead.frameTimeDiv = rate.num;
 
 	filehead.fileExtSize = 0;
 	filehead.fileExtData = 0;
 	filehead.frameExtSize = 0;
-	filehead.frameCount = 0;
+	filehead.frameCount = stream->nb_frames;
 	filehead.flags = 0;
 
 	// And get ready to write out the file.
