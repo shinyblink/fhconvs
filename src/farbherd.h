@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 // I know, I know, not standardized.
 #include <endian.h>
@@ -49,6 +51,10 @@ typedef struct {
 // Also note that on error, any buffers that would be malloced during the call are either freed or aren't malloced.
 // Meanwhile, on non-error, all buffers are safe to free() - they are malloc'd or are NULL, defined to be a NOP for free.
 inline static int farbherd_read_buffer(FILE * target, void * buf, size_t amount) {
+#ifdef POSIX_FADV_SEQUENTIAL
+	posix_fadvise(STDIN_FILENO, 0, amount, POSIX_FADV_SEQUENTIAL);
+#endif
+
 	do {
 		size_t a = fread(buf, 1, amount, target);
 		if (!a)
@@ -79,6 +85,7 @@ inline static int farbherd_read_farbfeld_header(FILE * target, farbfeld_header_t
 		return 1;
 	if (farbherd_read_int(target, &(fht->height)))
 		return 1;
+
 	return 0;
 }
 

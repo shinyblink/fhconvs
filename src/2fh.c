@@ -24,8 +24,6 @@
 #define ERRF(fmt, ...) fprintf(stderr, "[error] " fmt "\n", __VA_ARGS__)
 #define ERR(fmt) ERRF("%s", fmt)
 
-static const int stride = 8;
-
 int main(int argc, char* argv[]) {
 	size_t datasize;
 	farbherd_header_t filehead;
@@ -64,7 +62,7 @@ int main(int argc, char* argv[]) {
 	AVStream* stream;
 	int streamidx = -1;
 
-	int i;
+	unsigned int i;
 	for (i = 0; i < fmtctx->nb_streams; i++) {
 		stream = fmtctx->streams[i];
 		if (!stream) {
@@ -88,6 +86,7 @@ int main(int argc, char* argv[]) {
 
 	if (streamidx == -1) {
 		ERR("Couldn't find a suitable video stream.");
+		return 2;
 	}
 
 	// construct header information.
@@ -163,6 +162,7 @@ int main(int argc, char* argv[]) {
 		ERR("Failed to alloc frame.");
 		return 2;
 	}
+	cframe->colorspace = AVCOL_SPC_RGB;
 	av_image_fill_arrays(cframe->data, cframe->linesize, (unsigned char*) imagecore, AV_PIX_FMT_RGBA64BE, cparams->width, cparams->height, 1);
 
 	struct SwsContext* swsctx = sws_getContext(cparams->width, cparams->height, coctx->pix_fmt, cparams->width, cparams->height, AV_PIX_FMT_RGBA64BE, 0, NULL, NULL, NULL);

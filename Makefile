@@ -11,14 +11,16 @@ DESTDIR ?= /usr/local
 
 # Don't change after here.
 # Or do. I am not your mom.
-BINS=2fh fh2blind
-DEP=src/farbherd.h
+BINS=2fh fh2blind blind2fh
+DEP=src/farbherd.h src/conversion.h
 
 all: $(BINS)
 
 2fh: $(DEP) src/2fh.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ src/$@.c
 
+blind2fh: $(DEP) src/blind2fh.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ src/$@.c
 fh2blind: $(DEP) src/fh2blind.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o $@ src/$@.c
 

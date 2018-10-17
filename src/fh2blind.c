@@ -21,21 +21,7 @@
 #include <endian.h>
 
 #include "farbherd.h"
-
-#define SCALE(chan) (((double) betoh16(chan)) / UINT16_MAX)
-#define CONV(v1, v2, v3) (r * v1 + g * v2 + b * v3)
-static inline void convert(uint16_t* src, double* dst) {
-	// scale to 0..1
-	double r = SCALE(src[0]);
-	double g = SCALE(src[1]);
-	double b = SCALE(src[2]);
-	double a = SCALE(src[3]);
-
-	dst[0] = CONV(0.4124564, 0.3565651, 0.1804375);
-	dst[1] = CONV(0.2126729, 0.7151522, 0.0721750);
-	dst[2] = CONV(0.0193339, 0.1191920, 0.9503041);
-	dst[3] = a; // yep. very complicated.
-}
+#include "conversion.h"
 
 int main(int argc, char ** argv) {
 	if ((argc != 1)) {
@@ -67,13 +53,17 @@ int main(int argc, char ** argv) {
 		return 1;
 	}
 
-
 	// blind header.
 	printf("%u %u %u xyza\n", head.frameCount, head.imageHead.width, head.imageHead.height);
 	fputc(0, stdout);
 	fputs("uivf", stdout);
 	fflush(stdout);
 
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+	uint16_t tmp[4];
+#endif
+
+	FP scaled[4];
 	while (1) {
 		if (farbherd_read_farbherd_frame(stdin, &frame, head))
 			return 0;
@@ -83,7 +73,14 @@ int main(int argc, char ** argv) {
 		size_t p;
 		for (p = 0; p < (head.imageHead.height * head.imageHead.width); p++) {
 			size_t off = p * 4;
-			convert(&frame.deltas[off], &converted[off]);
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+			qbeush2ush(&frame.deltas[off], tmp);
+			qush2fp(tmp, scaled);
+#else
+			qush2fp(&frame.deltas[off], scaled);
+#endif
+			srgb2rgb(scaled, scaled);
+			rgb2xyz(scaled, &converted[off]);
 		}
 
 		fwrite(converted, datasize * 4, 1, stdout);
