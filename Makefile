@@ -1,7 +1,8 @@
 # farbherd Makefile
 CC ?= cc
-CFLAGS ?= -O2
+CFLAGS ?= -O2 -lm
 CPPFLAGS += -pedantic -Wall -Wextra
+CPPFLAGS += -I../farbherd/src
 
 LIBS = libavcodec libavformat libavutil libswscale
 LDFLAGS += $(shell pkg-config --libs $(LIBS))
@@ -12,7 +13,7 @@ DESTDIR ?= /usr/local
 # Don't change after here.
 # Or do. I am not your mom.
 BINS=2fh fh2blind blind2fh
-DEP=src/farbherd.h src/conversion.h
+DEP=src/conversion.h
 
 all: $(BINS)
 

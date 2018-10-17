@@ -19,14 +19,14 @@
 
 // BE uint16_t <-> NE uint16_t
 static inline void qbeush2ush(uint16_t* src, uint16_t* dst) {
-	dst[0] = betoh16(src[0]);
-  dst[1] = betoh16(src[1]);
-	dst[2] = betoh16(src[2]);
-	dst[3] = betoh16(src[3]);
+	dst[0] = be16toh(src[0]);
+	dst[1] = be16toh(src[1]);
+	dst[2] = be16toh(src[2]);
+	dst[3] = be16toh(src[3]);
 }
 static inline void qush2beush(uint16_t* src, uint16_t* dst) {
 	dst[0] = htobe16(src[0]);
-  dst[1] = htobe16(src[1]);
+	dst[1] = htobe16(src[1]);
 	dst[2] = htobe16(src[2]);
 	dst[3] = htobe16(src[3]);
 }

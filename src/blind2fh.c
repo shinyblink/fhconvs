@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "farbherd.h"
+#include <farbherd.h>
 #include "conversion.h"
 
 static inline void read_blind_header(farbherd_header_t* header) {

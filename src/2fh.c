@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "farbherd.h"
+#include <farbherd.h>
 
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
@@ -27,8 +27,9 @@
 int main(int argc, char* argv[]) {
 	size_t datasize;
 	farbherd_header_t filehead;
-	uint16_t* workingcore;
-	uint16_t* imagecore;
+	// These shouldn't need to be initialized for zero datasize, but they need to be initialized.
+	uint16_t* workingcore = 0;
+	uint16_t* imagecore = 0;
 	int ret;
 
 	if (argc != 2) {
@@ -70,7 +71,7 @@ int main(int argc, char* argv[]) {
 			return 2;
 		}
 		cparams = stream->codecpar;
-		MSG("[info] stream %i: framerate: %d/%d frames: %i\n", i, stream->r_frame_rate.num, stream->r_frame_rate.den, stream->nb_frames);
+		MSG("[info] stream %i: framerate: %d/%d frames: %li\n", i, stream->r_frame_rate.num, stream->r_frame_rate.den, stream->nb_frames);
 
 		codec = avcodec_find_decoder(cparams->codec_id);
 		if (!codec) {

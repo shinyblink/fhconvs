@@ -20,7 +20,7 @@
 // sorry.
 #include <endian.h>
 
-#include "farbherd.h"
+#include <farbherd.h>
 #include "conversion.h"
 
 int main(int argc, char ** argv) {
