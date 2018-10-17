@@ -74,10 +74,10 @@ int main(int argc, char ** argv) {
 		for (p = 0; p < (head.imageHead.height * head.imageHead.width); p++) {
 			size_t off = p * 4;
 #if __BYTE_ORDER == __LITTLE_ENDIAN
-			qbeush2ush(&frame.deltas[off], tmp);
+			qbeush2ush(&workspace[off], tmp);
 			qush2fp(tmp, scaled);
 #else
-			qush2fp(&frame.deltas[off], scaled);
+			qush2fp(&workspace[off], scaled);
 #endif
 			srgb2rgb(scaled, scaled);
 			rgb2xyz(scaled, &converted[off]);
