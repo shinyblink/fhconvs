@@ -17,9 +17,7 @@
 #include <string.h>
 #include <stdint.h>
 
-// sorry.
-#include <endian.h>
-
+// endian.h-esqe define are ensured in farbherd.h
 #include <farbherd.h>
 #include "conversion.h"
 

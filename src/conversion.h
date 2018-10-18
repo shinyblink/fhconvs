@@ -4,8 +4,10 @@
 // Not fast at all, but simple.
 #include <stdint.h>
 #include <math.h>
-// sorry.
-#include <endian.h>
+
+#ifndef htobe16
+#include <farbfeld.h>
+#endif
 
 #ifndef FP
 #define FP double
