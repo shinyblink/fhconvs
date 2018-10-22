@@ -140,10 +140,22 @@ int main(int argc, char* argv[]) {
 		ERR("Failed to copy params to context.");
 		return 2;
 	}
+
+	// threading.
+	// TODO: the sws_scale is still not threaded.
+	// it's probably the slowest part of the process.
+	// #ffmpeg says custom threading, call sws_scale on each frame.
+	// syncronization needs to happen, though. dunno how to fix that.
+	int ncpus = sysconf(_SC_NPROCESSORS_ONLN);
+	coctx->thread_count = ncpus;
+	coctx->thread_type = FF_THREAD_SLICE;
+
+	// open codec
 	if ((ret = avcodec_open2(coctx, codec, NULL)) < 0) {
 		ERRF("Failed to open codec: %s", av_err2str(ret));
 		return 2;
 	}
+
 
 	AVFrame* frame = av_frame_alloc();
 	if (!frame) {

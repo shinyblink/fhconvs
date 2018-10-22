@@ -90,18 +90,9 @@ static inline void rgb2xyz(FP* src, FP* dst) {
 						0.119191955081838593666354597644,
 						0.950302838552371742508739771438);
 
-	// Wikipedia says this should deliver exact results.
-	// But.. it doesn't seem to work properly in my testing..
-	/*MAT3M3MUL(src, dst, (1.0/0.17697),
-						0.49000, 0.31000, 0.20000,
-						0.17697, 0.81240, 0.01063,
-						0.00000, 0.01000, 0.99000);
-	*/
 	dst[3] = src[3]; // yep. very complicated.
 }
 
-// This seems to be wrong enough to cause
-// very visual artifacting?
 static inline void xyz2rgb(FP* src, FP* dst) {
 	// table stolen from blind.
 	MAT3M3MUL(src, dst, 1,

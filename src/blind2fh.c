@@ -112,12 +112,12 @@ int main(int argc, char ** argv) {
 				xyz2rgb(&blindbuffer[px], scaled);
 				rgb2srgb(scaled, scaled);
 				//fprintf(stderr, "CIE XYZ: (%f,%f,%f,%f)", blindbuffer[px], blindbuffer[px + 1], blindbuffer[px + 2], blindbuffer[px + 3]);
-				//#if __BYTE_ORDER == __LITTLE_ENDIAN
+#if __BYTE_ORDER == __LITTLE_ENDIAN
 				qfp2ush(scaled, tmp);
-				qush2beush(tmp, &workingcore[px]);
-				/*#else
-				qfp2ush(scaled, &workingcore[px]);
-				#endif*/
+				qush2beush(tmp, &imagecore[px]);
+#else
+				qfp2ush(scaled, &imagecore[px]);
+#endif
 			}
 
 			farbherd_calc_apply_delta(workingcore, imagecore, datasize);

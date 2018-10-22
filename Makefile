@@ -29,5 +29,9 @@ fh2blind: $(DEP) src/fh2blind.c
 install: $(BINS)
 	mkdir -p $(DESTDIR)/bin
 	install $(BINS) $(DESTDIR)/bin
+uninstall:
+	cd $(DESTDIR)/bin && rm -f $(BINS)
+
+
 clean:
 	rm -f $(BINS)
