@@ -8,7 +8,8 @@ LIBS = libavcodec libavformat libavutil libswscale
 LDFLAGS += $(shell pkg-config --libs $(LIBS))
 CPPFLAGS += $(shell pkg-config --cflags $(LIBS))
 
-DESTDIR ?= /usr/local
+PREFIX ?= /usr/local
+DESTIR ?= /
 
 # Don't change after here.
 # Or do. I am not your mom.
@@ -27,10 +28,11 @@ fh2blind: $(DEP) src/fh2blind.c
 
 .PHONY:
 install: $(BINS)
-	mkdir -p $(DESTDIR)/bin
-	install $(BINS) $(DESTDIR)/bin
+	mkdir -p $(DESTDIR)/$(PREFIX)/bin
+	install $(BINS) $(DESTDIR)/$(PREFIX)/bin
+
 uninstall:
-	cd $(DESTDIR)/bin && rm -f $(BINS)
+	cd $(DESTDIR)/$(PREFIX)/bin && rm -f $(BINS)
 
 
 clean:
